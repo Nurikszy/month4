@@ -47,3 +47,22 @@ def ReviewDetail(request, id):
     DTReview = Review.objects.get(id=id)
     data = ReviewSLZ(DTReview).data
     return Response(data=data)
+
+# @api_view(['GET'])
+# def listmiviewsbyreviews(request):
+#     qeuryset = Movie.objects.all()
+#     data = MovieSLZ(qeuryset).data
+#     return Response(data=data)
+
+@api_view(['GET'])
+def cinema_list_view(request):
+        movies = Movie.objects.all()
+        serializer = MovieSLZ(movies, many=True)
+        return Response(data=serializer.data)
+
+
+@api_view(['GET'])
+def directors_list_view(request):
+        directors = Movie.objects.all()
+        serializer = DirectorSLZ(directors, many=True)
+        return Response(data=serializer.data)
