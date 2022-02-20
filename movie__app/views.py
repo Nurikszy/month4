@@ -11,42 +11,101 @@ def directors(request):
     }
     return Response(data=namesDirectors)
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def DirectorsListView(request):
-    directors = Director.objects.all()
-    data = DirectorSLZ(directors, many=True).data
-    return Response(data=data)
+    if request.method == 'GET':
+        directors = Director.objects.all()
+        data = DirectorSLZ(directors, many=True).data
+        return Response(data=data)
+    elif request.method == 'POST':
+        print(request.data)
+        name = request.data.get('name')
+        Director.objects.create(name=name)
+        return Response(data={'message': 'Date Reseived!'})
 
-@api_view(['GET'])
+
+@api_view(['GET', 'POST'])
 def MovieListView(request):
-    movies = Movie.objects.all()
-    data =  MovieSLZ(movies, many=True).data
-    return Response(data=data)
+    if request.method == 'GET':
+        movies = Movie.objects.all()
+        data =  MovieSLZ(movies, many=True).data
+        return Response(data=data)
+    elif request.method == 'POST':
+        print(request.data)
+        title = request.data.get('title')
+        description = request.data.get('description')
+        duration = request.data.get('duration')
+        director = request.data.get('director')
+        Movie.objects.create(title=title, description=description, duration=duration,director=director)
+        return Response(data={'message': 'Date Reseived!'})
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def ReviewListView(request):
-    Reviews = Review.objects.all()
-    data = ReviewSLZ(Reviews, many=True).data
-    return Response(data=data)
+    if request.method == 'GET':
+        Reviews = Review.objects.all()
+        data = ReviewSLZ(Reviews, many=True).data
+        return Response(data=data)
+    elif request.method == 'POST':
+        print(request.data)
+        text = request.data.get('text')
+        movie = request.data.get('movie')
+        stars = request.data.get('stars')
+        Review.objects.create(text=text,movie=movie,stars=stars)
+        return Response(data={'message': 'Date Reseived!'})
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def DirectorDetail(request, id):
-    DTDirector = Director.objects.get(id=id)
-    data = DirectorSLZ(DTDirector).data
-    return Response(data=data)
+    try:
+        DTDirector = Director.objects.get(id=id)
+    except Director.DoesNotExist:
+        return Response(data='DirectorNotFound')
+    if request.method == 'GET':
+        data = DirectorSLZ(DTDirector).data
+        return Response(data=data)
+    elif request.method == 'DELETE':
+        DTDirector.delete()
+        return Response('no content')
+    elif request.method == 'PUT':
+        DTDirector.name = request.data.get('name')
+        DTDirector.save()
+        return Response(data=DirectorSLZ(DTDirector).data)
 
-@api_view(['GET'])
+
+@api_view(['GET', 'PUT', 'DELETE'])
 def MovieDetail(request, id):
-    DTMovie = Movie.objects.get(id=id)
-    data = MovieSLZ(DTMovie).data
-    return Response(data=data)
+    try:
+        DTMovie = Movie.objects.get(id=id)
+    except Movie.DoesNotExist:
+        return Response(data='MovieNotFound')
+    if request.method == 'GET':
+        data = MovieSLZ(DTMovie).data
+        return Response(data=data)
+    elif request.method == 'DELETE':
+        DTMovie.delete()
+        return Response('no content')
+    elif request.method == 'PUT':
+        DTMovie.name = request.data.get('name')
+        DTMovie.save()
+        return Response(data=DirectorSLZ(DTMovie).data)
+
 
 
 @api_view(['GET'])
 def ReviewDetail(request, id):
-    DTReview = Review.objects.get(id=id)
-    data = ReviewSLZ(DTReview).data
-    return Response(data=data)
+    try:
+        DTReview = Review.objects.get(id=id)
+    except Review.DoesNotExist:
+        return Response(data='ReviewNotFound')
+    if request.method == 'GET':
+        data = ReviewSLZ(DTReview).data
+        return Response(data=data)
+    elif request.method == 'DELETE':
+        DTReview.delete()
+        return Response('no content')
+    elif request.method == 'PUT':
+        DTReview.name = request.data.get('name')
+        DTReview.save()
+        return Response(data=DirectorSLZ(DTReview).data)
 
 # @api_view(['GET'])
 # def listmiviewsbyreviews(request):
@@ -63,6 +122,12 @@ def cinema_list_view(request):
 
 @api_view(['GET'])
 def directors_list_view(request):
-        directors = Movie.objects.all()
-        serializer = DirectorSLZ(directors, many=True)
-        return Response(data=serializer.data)
+    if request.method == 'GET':
+        directors = Director.objects.all()
+        data = DirectorSLZ(directors, many=True).data
+        return Response(data=data)
+    elif request.method == 'POST':
+        print(request.data)
+        name = request.data.get('name')
+        Director.objects.create(name=name)
+        return Response(data={'message': 'Date Reseived!'})
