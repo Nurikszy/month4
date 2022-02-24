@@ -1,7 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from movie__app.serializers import DirectorSLZ, MovieSLZ, ReviewSLZ
+from movie__app.serializers import DirectorSLZ, MovieSLZ, ReviewSLZ, MovieCreateUpdateSerializer, ReviewCreateUpdateSerialiser, DirectorСreqteUpdateSrializer
 from movie__app.models import Director, Movie, Review
+from rest_framework import status
 @api_view(['GET'])
 def directors(request):
     namesDirectors = {
@@ -18,7 +19,10 @@ def DirectorsListView(request):
         data = DirectorSLZ(directors, many=True).data
         return Response(data=data)
     elif request.method == 'POST':
-        print(request.data)
+        serializers = DirectorСreqteUpdateSrializer(data=request.data)
+        if not serializers.is_valid():
+            return Response(data={'errors': serializers.errors},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
         name = request.data.get('name')
         Director.objects.create(name=name)
         return Response(data={'message': 'Date Reseived!'})
@@ -31,7 +35,10 @@ def MovieListView(request):
         data =  MovieSLZ(movies, many=True).data
         return Response(data=data)
     elif request.method == 'POST':
-        print(request.data)
+        serializers =MovieCreateUpdateSerializer(data=request.data)
+        if not serializers.is_valid():
+            return Response(data={'errors':serializers.errors},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
         title = request.data.get('title')
         description = request.data.get('description')
         duration = request.data.get('duration')
@@ -46,7 +53,10 @@ def ReviewListView(request):
         data = ReviewSLZ(Reviews, many=True).data
         return Response(data=data)
     elif request.method == 'POST':
-        print(request.data)
+        serializers = ReviewCreateUpdateSerialiser(data=request.data)
+        if not serializers.is_valid():
+            return Response(data={'errors': serializers.errors},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
         text = request.data.get('text')
         movie = request.data.get('movie')
         stars = request.data.get('stars')
@@ -127,6 +137,10 @@ def directors_list_view(request):
         data = DirectorSLZ(directors, many=True).data
         return Response(data=data)
     elif request.method == 'POST':
+        serializers = DirectorСreqteUpdateSrializer(data=request.data)
+        if not serializers.is_valid():
+            return Response(data={'errors': serializers.errors},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
         print(request.data)
         name = request.data.get('name')
         Director.objects.create(name=name)

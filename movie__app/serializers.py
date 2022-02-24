@@ -31,6 +31,19 @@ class Director2SLZ(serializers.ModelSerializer):
     def get_movie_count(self, movie):
         return movie.all().count()
 
+class DirectorСreqteUpdateSrializer(serializers.Serializer):
+    name = serializers.CharField()
+
+class MovieCreateUpdateSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    description = serializers.CharField()
+    duration = serializers.TimeField()
+    director = serializers.IntegerField()
+
+class ReviewCreateUpdateSerialiser(serializers.Serializer):
+    text = serializers.CharField()
+    movie = serializers.CharField()
+    stars = serializers.IntegerField(default=5)
 
 
 
