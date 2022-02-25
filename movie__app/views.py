@@ -76,6 +76,10 @@ def DirectorDetail(request, id):
         DTDirector.delete()
         return Response('no content')
     elif request.method == 'PUT':
+        serializers = DirectorСreqteUpdateSrializer(data=request.data)
+        if not serializers.is_valid():
+            return Response(data={'errors': serializers.errors},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
         DTDirector.name = request.data.get('name')
         DTDirector.save()
         return Response(data=DirectorSLZ(DTDirector).data)
@@ -94,6 +98,10 @@ def MovieDetail(request, id):
         DTMovie.delete()
         return Response('no content')
     elif request.method == 'PUT':
+        serializers = MovieCreateUpdateSerializer(data=request.data)
+        if not serializers.is_valid():
+            return Response(data={'errors': serializers.errors},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
         DTMovie.name = request.data.get('name')
         DTMovie.save()
         return Response(data=DirectorSLZ(DTMovie).data)
@@ -113,6 +121,10 @@ def ReviewDetail(request, id):
         DTReview.delete()
         return Response('no content')
     elif request.method == 'PUT':
+        serializers = ReviewCreateUpdateSerialiser(data=request.data)
+        if not serializers.is_valid():
+            return Response(data={'errors': serializers.errors},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
         DTReview.name = request.data.get('name')
         DTReview.save()
         return Response(data=DirectorSLZ(DTReview).data)
@@ -130,7 +142,7 @@ def cinema_list_view(request):
         return Response(data=serializer.data)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def directors_list_view(request):
     if request.method == 'GET':
         directors = Director.objects.all()
